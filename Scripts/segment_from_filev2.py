@@ -6,9 +6,12 @@ Created on Wed Nov 24 15:24:24 2021
 
 Create segmented images from a directory, as well as a list of ROI with calculated features
 Usage:
-    python segment_from_filev2 D:/irectory/to/scan
-    or
-    python segment_from_filev2 D:/irectory/to/scan reset
+    python segment_from_filev2 D:/irectory/to/scan args
+    where args can be:
+        reset: recompute all ROI
+        mosaic: build a mosaic with the biggest roi (default size = 3000)
+        mosaic=x: build a mosaic of size (x,x)
+    
 Requirement:
     -run this script on a folder containing an img folder
     -it will create an object, ROI and img_flat directories itself
@@ -51,6 +54,8 @@ function_dir = os.path.join(os.pardir, 'Functions')
 sys.path.append(function_dir)
 #import it
 import segmentationv2 as seg
+import mosaic_from_file as mos
+
 importlib.reload(seg) #to make sure the last version of seg is used
 
 def scan_file(base):
@@ -156,12 +161,24 @@ if __name__ == '__main__':
     mindiff = 10
     count = 0
     reset = False
+    print_mosaic = False
+    max_size=3000
     if len(sys.argv) <= 1:
         print ("Please input a dirtectory to scan and segment, aborting.")
     else:
         if len(sys.argv)>=3:
-            if sys.argv[2]=='reset':
+            if 'reset' in sys.argv:
+                #delete the previously computed ROI
                 reset = True
+            for arg in sys.argv:
+                if 'mosaic' in arg:
+                    #print the mosaic of the aquisition in img_flat
+                    print_mosaic = True
+                    split = arg.split(sep='=')
+                    if len(split)>1:
+                        max_size = int(split[1])
+    
+                
         base = sys.argv[1]
         #reset previous segmentation
         if reset:
@@ -173,7 +190,9 @@ if __name__ == '__main__':
             paths_dest,n = create_tree(paths)
         else:
             paths_dest,n = find_new_tree(paths)
-        print(str(n)+" different folder have been found, flattening")
+            
+        print(str(n)+" different folder have been found")
+        
         for idx_folder,(path_img,path_obj,path_flat,path_ROI) in enumerate(paths_dest):
             print("processing folder "+str(idx_folder+1)+"/"+str(n))
             img_ar = seg.create_aquisition_array(path_img)
@@ -214,4 +233,5 @@ if __name__ == '__main__':
                 bundle_f = pd.DataFrame(bundle_l)
                 with open(os.path.join(path_obj, "bundle_frame_"+str(idx_folder)+"_"+str(idx_img)+".pickle"), 'wb') as f:
                     pickle.dump(bundle_f, f)
+            mos.build_mosaic_from_folder(path_ROI, path_flat,max_size = max_size)
     print('done, '+str(count)+' png files were created')
