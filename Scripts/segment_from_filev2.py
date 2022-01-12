@@ -125,15 +125,13 @@ def find_new_tree(paths):
             
             os.makedirs(path_ROI)
             try:
-                shutil.rmtree(path_flat)
+                os.makedirs(path_flat)
             except:
                 pass
             try:
                 shutil.rmtree(path_obj)
             except:
                 pass
-            
-            os.makedirs(path_flat)
             os.makedirs(path_obj)
                 
                 
