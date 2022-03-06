@@ -6,9 +6,12 @@ Created on Wed Nov 24 15:24:24 2021
 
 Create segmented images from a directory, as well as a list of ROI with calculated features
 Usage:
-    python segment_from_filev2 D:/irectory/to/scan
-    or
-    python segment_from_filev2 D:/irectory/to/scan reset
+    python segment_from_filev2 D:/irectory/to/scan args
+    where args can be:
+        reset: recompute all ROI
+        mosaic: build a mosaic with the biggest roi (default size = 3000)
+        mosaic=x: build a mosaic of size (x,x)
+    
 Requirement:
     -run this script on a folder containing an img folder
     -it will create an object, ROI and img_flat directories itself
@@ -122,15 +125,13 @@ def find_new_tree(paths):
             
             os.makedirs(path_ROI)
             try:
-                shutil.rmtree(path_flat)
+                os.makedirs(path_flat)
             except:
                 pass
             try:
                 shutil.rmtree(path_obj)
             except:
                 pass
-            
-            os.makedirs(path_flat)
             os.makedirs(path_obj)
                 
                 
@@ -158,7 +159,7 @@ if __name__ == '__main__':
     mindiff = 10
     count = 0
     reset = False
-    print_mosaic = False
+    print_mosaic = True
     max_size=3000
     if len(sys.argv) <= 1:
         print ("Please input a dirtectory to scan and segment, aborting.")
