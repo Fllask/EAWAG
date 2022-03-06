@@ -1,0 +1,116 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 100%;
+            height: 800px;
+            background-color: #222222;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"font": {"color": "white"}, "id": 0, "label": "nauplius", "shape": "dot"}, {"font": {"color": "white"}, "id": 1, "label": "ciliate", "shape": "dot"}, {"font": {"color": "white"}, "id": 2, "label": "mean_temp", "shape": "dot"}, {"font": {"color": "white"}, "id": 3, "label": "mean_o2", "shape": "dot"}, {"font": {"color": "white"}, "id": 4, "label": "mean_ph", "shape": "dot"}, {"font": {"color": "white"}, "id": 5, "label": "mean_chla", "shape": "dot"}, {"font": {"color": "white"}, "id": 6, "label": "cv_chla_day", "shape": "dot"}, {"font": {"color": "white"}, "id": 7, "label": "precipitation_tot", "shape": "dot"}, {"font": {"color": "white"}, "id": 8, "label": "windspeed_max", "shape": "dot"}, {"font": {"color": "white"}, "id": 9, "label": "Nitrat", "shape": "dot"}, {"font": {"color": "white"}, "id": 10, "label": "Nitrit", "shape": "dot"}, {"font": {"color": "white"}, "id": 11, "label": "Ammonium", "shape": "dot"}, {"font": {"color": "white"}, "id": 12, "label": "TP", "shape": "dot"}, {"font": {"color": "white"}, "id": 13, "label": "TN", "shape": "dot"}, {"font": {"color": "white"}, "id": 14, "label": "mean_thermocline_depth", "shape": "dot"}, {"font": {"color": "white"}, "id": 15, "label": "mean_schmidt", "shape": "dot"}, {"font": {"color": "white"}, "id": 16, "label": "mean_mixed_layer_depth", "shape": "dot"}, {"font": {"color": "white"}, "id": 17, "label": "year", "shape": "dot"}, {"font": {"color": "white"}, "id": 18, "label": "month", "shape": "dot"}, {"font": {"color": "white"}, "id": 19, "label": "day", "shape": "dot"}]);
+        edges = new vis.DataSet([{"from": 2, "to": 15, "width": 2.4158593892732316}, {"from": 4, "to": 3, "width": 6.1903394964690595}, {"from": 5, "to": 1, "width": 3.7540105570748272}, {"from": 5, "to": 2, "width": 2.4226130303046256}, {"from": 5, "to": 18, "width": 5.068784507402727}, {"from": 7, "to": 3, "width": 8.090499966127105}, {"from": 8, "to": 3, "width": 7.456319848843119}, {"from": 9, "to": 5, "width": 7.75403274584346}, {"from": 10, "to": 3, "width": 7.5580122066393916}, {"from": 10, "to": 6, "width": 8.079595429935374}, {"from": 11, "to": 1, "width": 7.5302466387622085}, {"from": 11, "to": 13, "width": 5.190651955596357}, {"from": 12, "to": 2, "width": 6.825019627288974}, {"from": 14, "to": 10, "width": 8.174486967674309}, {"from": 15, "to": 0, "width": 5.83006340898603}, {"from": 15, "to": 3, "width": 5.333760994178405}, {"from": 16, "to": 15, "width": 6.483420479054846}, {"from": 17, "to": 2, "width": 9.13372804162445}, {"from": 19, "to": 0, "width": 8.225409227939586}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

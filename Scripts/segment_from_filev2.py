@@ -159,7 +159,7 @@ if __name__ == '__main__':
     mindiff = 10
     count = 0
     reset = False
-    print_mosaic = False
+    print_mosaic = True
     max_size=3000
     if len(sys.argv) <= 1:
         print ("Please input a dirtectory to scan and segment, aborting.")

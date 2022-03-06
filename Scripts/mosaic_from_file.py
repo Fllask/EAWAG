@@ -53,7 +53,8 @@ def build_mosaic(img_list, max_size=1000):
                     interest_corners.append((ic[0],ic[1]+img.shape[1]))
                     interest_corners.append((ic[0]+img.shape[0],ic[1]))
                     break
-    
+    if np.max(mos) > 1:
+        mos /= np.max(mos)
     return mos
 def build_mosaic_from_folder(source,dest, max_size = 1000):
     name_list = find_img(source)

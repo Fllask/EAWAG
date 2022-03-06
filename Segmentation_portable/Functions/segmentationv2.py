@@ -47,99 +47,7 @@ def flatten_acquisition(img_ar, max_length = None):
     else:
         flat_img = np.median(img_ar,axis = 0)
     return flat_img
-def label_standard(imgn, threshold,shrink_factor=2, dil_size = 24, median_size = 20,
-                   sigma = 7, timed = 0,sobel_factor=10, plot=False,return_features=False):
-    #correct the different parameters according to the shrink factor:
-    dil_size //= shrink_factor
-    median_size //=shrink_factor
-    
-    if timed:
-        t0 = time.perf_counter()
-    #remove static elements that stays during the whole aquisition, as well as
-    #hue shift throughout the image
-    #shrink the image to fasten the calculations, and convert it to grayscale
-    img_small = (np.sum(imgn[0::shrink_factor,0::shrink_factor],axis=2)/3)    
-    if timed:
-        t1 = time.perf_counter()
-    img_smooth = filters.gaussian(img_small)
-    if timed:
-        t2 = time.perf_counter()
-    
-    
-    
-    #binarize
-    img_bin = img_smooth < threshold
-    if timed:
-        t3 = time.perf_counter()
-    
-    #morphological dilation to connect the different parts
-    img_op = morphology.binary_erosion(img_bin)
-    img_dil = morphology.binary_dilation(img_op,selem = morphology.disk(dil_size))
-    
-    if timed:
-        t4 = time.perf_counter()
-    
-    #binary watershed
-    img_label, n_ROI = ndimage.label(img_dil.astype(int))
-    #recover a full size img:
-    img_full = img_label.repeat(shrink_factor, axis=0).repeat(shrink_factor, axis=1)
-    if timed:
-        t5 = time.perf_counter()          
-    
-    if return_features:
-        sobel = filters.sobel(img_smooth)
-        #the image is not normalized to have a comparation possible bewteen 
-        #different images
-        sobel_uint8 = (sobel*255*sobel_factor).astype(np.uint8)
-        sobel_med = filters.rank.median(sobel_uint8, morphology.disk(median_size))
-        sobel_full = sobel_med.repeat(shrink_factor, axis=0).repeat(shrink_factor, axis=1)
-        smooth_full = img_smooth.repeat(shrink_factor, axis=0).repeat(shrink_factor, axis=1)
-    #print performances:
-    if timed > 1:
-        print('the preprocessing took: \n - '
-             +str(t1-t0)+'s to normalize and substract the mean\n - '
-             +str(t2-t1)+'s to smoth the image\n - '
-             +str(t3-t2)+'s to binarize it\n - '
-             +str(t4-t3)+'s to dilate it\n - '
-             +str(t5-t4)+'s to label it\n ----- TOTAL: '+str(t5-t0)+'s')
-    
-    if plot:
-        #plot
-        fig, ax = plt.subplots(3, 2, figsize=(15, 18))
-        
-        ax[0,0].imshow(imgn)
-        ax[0,0].set_title('original img (normalized over the dataset)')
-        ax[0,0].axis('off')
-        
-        ax[0,1].set_title('smooth img')
-        ax[0,1].imshow(img_smooth,vmin =0,vmax=1,cmap='jet')
-        ax[0,1].axis('off')
-        
-        ax[1,0].set_title('binarized img')
-        ax[1,0].imshow(img_bin)
-        ax[1,0].axis('off')
-        
-        ax[1,1].set_title('img dilated')
-        ax[1,1].imshow(img_dil)
-        ax[1,1].axis('off')
-        
-        ax[2,0].set_title('img labeled')
-        ax[2,0].imshow(img_label)
-        ax[2,0].axis('off')
-        
-        if return_features:
-            ax[2,1].set_title('median sobel')
-            ax[2,1].imshow(sobel_med,cmap='jet')
-            ax[2,1].axis('off')
-        plt.show()
-    if return_features:
-        ret = [img_full,sobel_full,smooth_full]
-    else:
-        ret = img_full
-    if timed:
-        return ret, t5-t0
-    
-    return ret
+
 def label_img_noBG(img, flat_img, threshold=0.35, shrink_factor=2, dil_size = 12, sigma = 14,
                    timed = 0,sobel_scale=10,plot=False,return_features=False,op_size = 3):
     #correct the different parameters according to the shrink factor:
@@ -300,6 +208,7 @@ def segment(img, img_label, shrink_factor=1,margin=20,return_tl = False,
         if return_mask:
             ret.append(mask_list)
         return ret
+
 def multichannel_segment(img_channels, img_label, shrink_factor = 1, margin = 25,
                          return_corners = False,return_mask = False, plot = False):
     #takes a list of images of the same size and return a list of crops taken with the 
@@ -368,7 +277,17 @@ def segment_corners(img_label, shrink_factor = 1, margin = 20):
         ymax = shrink_factor*min(np.max(y)+margin,w)
         corner_list.append(((xmin,ymin),(xmax,ymax)))
     return corner_list
-
+def create_bundle(ROI_sob, corner, mask, id, image_source):
+    bundle = {}
+    bundle['id']= id
+    bundle['img source']=image_source
+    bundle['freq hist'],trash=np.histogram(ROI_sob,256,range = (0,255))
+    bundle['position'] = corner
+    bundle['area']=np.sum(mask)
+    bundle['mask']=mask
+    bundle['aspect ratio'] = ROI_sob.shape[0]/ROI_sob.shape[1]
+    return bundle
+    
 def get_ROI(bundle):
     img_ROI = skimage.io.imread(bundle['img source'])
     ROI = img_ROI[bundle['xmin']:bundle['xmax'],bundle['ymin']:bundle['ymax']]
