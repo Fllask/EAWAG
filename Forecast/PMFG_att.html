@@ -1,0 +1,108 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 800px;
+            height: 600px;
+            background-color: #FFFFFF;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "blue", "font": {"color": "black"}, "id": "mean_o2", "label": "mean_o2", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "id": "TP", "label": "TP", "shape": "dot", "size": 10}, {"color": "lime", "font": {"color": "black"}, "id": "ciliate", "label": "ciliate", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "black"}, "id": "mean_ph", "label": "mean_ph", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "id": "TN", "label": "TN", "shape": "dot", "size": 10}, {"color": "yellow", "font": {"color": "black"}, "id": "mean_mixed_layer_depth", "label": "mean_mixed_layer_depth", "shape": "dot", "size": 10}, {"color": "lime", "font": {"color": "black"}, "id": "nauplius", "label": "nauplius", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "black"}, "id": "mean_temp", "label": "mean_temp", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "black"}, "id": "mean_chla", "label": "mean_chla", "shape": "dot", "size": 10}, {"color": "yellow", "font": {"color": "black"}, "id": "mean_schmidt", "label": "mean_schmidt", "shape": "dot", "size": 10}, {"color": "yellow", "font": {"color": "black"}, "id": "mean_thermocline_depth", "label": "mean_thermocline_depth", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "id": "Nitrat", "label": "Nitrat", "shape": "dot", "size": 10}, {"color": "cyan", "font": {"color": "black"}, "id": "precipitation_tot", "label": "precipitation_tot", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "id": "Nitrit", "label": "Nitrit", "shape": "dot", "size": 10}, {"color": "cyan", "font": {"color": "black"}, "id": "windspeed_max", "label": "windspeed_max", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "id": "Ammonium", "label": "Ammonium", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "black"}, "id": "cv_chla_day", "label": "cv_chla_day", "shape": "dot", "size": 10}]);
+        edges = new vis.DataSet([{"arrows": "to", "color": "blue", "from": "mean_o2", "to": "TP", "weight": 169.63363230228424}, {"arrows": "to", "color": "blue", "from": "mean_o2", "to": "ciliate", "weight": 142.02546760439873}, {"arrows": "to", "color": "blue", "from": "mean_o2", "to": "mean_ph", "weight": 153.58092069625854}, {"arrows": "to", "color": "blue", "from": "mean_o2", "to": "TN", "weight": 109.23579979687929}, {"arrows": "to", "color": "blue", "from": "mean_o2", "to": "mean_mixed_layer_depth", "weight": 136.54144763946533}, {"arrows": "to", "color": "blue", "from": "mean_o2", "to": "nauplius", "weight": 115.86426883935928}, {"arrows": "to", "color": "blue", "from": "TP", "to": "mean_temp", "weight": 190.3708939254284}, {"arrows": "to", "color": "blue", "from": "TP", "to": "mean_mixed_layer_depth", "weight": 178.07356104254723}, {"arrows": "to", "color": "blue", "from": "TP", "to": "TN", "weight": 166.69913828372955}, {"arrows": "to", "color": "blue", "from": "TP", "to": "mean_chla", "weight": 165.5904047191143}, {"arrows": "to", "color": "blue", "from": "TP", "to": "mean_schmidt", "weight": 127.98644833266735}, {"arrows": "to", "color": "blue", "from": "TP", "to": "mean_thermocline_depth", "weight": 109.39540319144726}, {"arrows": "to", "color": "blue", "from": "TP", "to": "nauplius", "weight": 124.34835031628609}, {"arrows": "to", "color": "blue", "from": "TP", "to": "ciliate", "weight": 122.9797688126564}, {"arrows": "to", "color": "blue", "from": "TP", "to": "Nitrat", "weight": 120.66623859107494}, {"arrows": "to", "color": "blue", "from": "mean_temp", "to": "ciliate", "weight": 162.47528180480003}, {"arrows": "to", "color": "blue", "from": "mean_temp", "to": "mean_chla", "weight": 121.77362859249115}, {"arrows": "to", "color": "blue", "from": "mean_schmidt", "to": "precipitation_tot", "weight": 186.91361412405968}, {"arrows": "to", "color": "blue", "from": "mean_schmidt", "to": "Nitrat", "weight": 139.08841654658318}, {"arrows": "to", "color": "blue", "from": "mean_schmidt", "to": "mean_thermocline_depth", "weight": 126.45411014556885}, {"arrows": "to", "color": "blue", "from": "mean_schmidt", "to": "Nitrit", "weight": 119.47305299341679}, {"arrows": "to", "color": "blue", "from": "mean_schmidt", "to": "nauplius", "weight": 125.19234783947468}, {"arrows": "to", "color": "blue", "from": "precipitation_tot", "to": "nauplius", "weight": 148.16274270415306}, {"arrows": "to", "color": "blue", "from": "precipitation_tot", "to": "windspeed_max", "weight": 142.61224195361137}, {"arrows": "to", "color": "blue", "from": "precipitation_tot", "to": "Nitrit", "weight": 138.38104382157326}, {"arrows": "to", "color": "blue", "from": "precipitation_tot", "to": "Nitrat", "weight": 138.3327803760767}, {"arrows": "to", "color": "blue", "from": "precipitation_tot", "to": "ciliate", "weight": 116.6846564412117}, {"arrows": "to", "color": "blue", "from": "precipitation_tot", "to": "Ammonium", "weight": 129.04306948184967}, {"arrows": "to", "color": "blue", "from": "mean_mixed_layer_depth", "to": "TN", "weight": 134.03854295611382}, {"arrows": "to", "color": "blue", "from": "ciliate", "to": "Nitrat", "weight": 137.06432461738586}, {"arrows": "to", "color": "blue", "from": "ciliate", "to": "mean_ph", "weight": 125.0315997004509}, {"arrows": "to", "color": "blue", "from": "ciliate", "to": "Ammonium", "weight": 118.03108088672161}, {"arrows": "to", "color": "blue", "from": "ciliate", "to": "cv_chla_day", "weight": 116.04799211025238}, {"arrows": "to", "color": "blue", "from": "ciliate", "to": "mean_chla", "weight": 110.74212223291397}, {"arrows": "to", "color": "blue", "from": "ciliate", "to": "windspeed_max", "weight": 114.10495653748512}, {"arrows": "to", "color": "blue", "from": "TN", "to": "nauplius", "weight": 147.35990703105927}, {"arrows": "to", "color": "blue", "from": "mean_chla", "to": "Nitrat", "weight": 116.70885510742664}, {"arrows": "to", "color": "blue", "from": "mean_thermocline_depth", "to": "Nitrat", "weight": 109.38309699296951}, {"arrows": "to", "color": "blue", "from": "mean_ph", "to": "cv_chla_day", "weight": 124.13088798522949}, {"arrows": "to", "color": "blue", "from": "mean_ph", "to": "nauplius", "weight": 107.29277417063713}, {"arrows": "to", "color": "blue", "from": "nauplius", "to": "cv_chla_day", "weight": 144.0608163177967}, {"arrows": "to", "color": "blue", "from": "nauplius", "to": "Nitrit", "weight": 125.2444276213646}, {"arrows": "to", "color": "blue", "from": "nauplius", "to": "Ammonium", "weight": 111.69746171683073}, {"arrows": "to", "color": "blue", "from": "windspeed_max", "to": "Ammonium", "weight": 146.6194336116314}, {"arrows": "to", "color": "blue", "from": "Ammonium", "to": "cv_chla_day", "weight": 123.58866646885872}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

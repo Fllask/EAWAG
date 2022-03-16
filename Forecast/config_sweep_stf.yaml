@@ -1,0 +1,184 @@
+command:
+- python
+- ../spacetimeformer/custom_train.py
+- spacetimeformer
+- HF_noint
+- --early_stopping
+- --wandb
+- --time_mask_loss
+- ${args}
+method: bayes
+metric:
+  goal: minimize
+  name: val/rse
+name: stf_sweep_hf_noint
+parameters:
+  accumulate:
+    distribution: int_uniform
+    max: 5
+    min: 1
+  activation:
+    distribution: categorical
+    values:
+    - relu
+    - gelu
+  attn_factor:
+    distribution: int_uniform
+    max: 10
+    min: 1
+  base_lr:
+    distribution: log_uniform
+    max: -5.2
+    min: -9.9
+  batch_size:
+    distribution: int_uniform
+    max: 128
+    min: 4
+  class_loss_imp:
+    distribution: uniform
+    max: 1
+    min: 0
+  context_points:
+    distribution: int_uniform
+    max: 60
+    min: 3
+  d_ff:
+    value: 0
+  d_model:
+    distribution: categorical
+    values:
+    - 32
+    - 64
+    - 128
+    - 256
+    - 512
+  data_path:
+    value: auto
+  dec_layers:
+    distribution: int_uniform
+    max: 6
+    min: 1
+  decay_factor:
+    distribution: uniform
+    max: 0.5
+    min: 0
+  dropout_attn_out:
+    distribution: uniform
+    max: 0.9
+    min: 0
+  dropout_emb:
+    distribution: uniform
+    max: 0.9
+    min: 0
+  dropout_ff:
+    distribution: uniform
+    max: 0.9
+    min: 0
+  dropout_qkv:
+    distribution: uniform
+    max: 0.9
+    min: 0
+  dropout_token:
+    distribution: uniform
+    max: 0.9
+    min: 0
+  embed_method:
+    value: spatio-temporal
+  enc_layers:
+    distribution: int_uniform
+    max: 6
+    min: 1
+  global_cross_attn:
+    value: performer
+  global_self_attn:
+    value: performer
+  grad_clip_norm:
+    distribution: categorical
+    values:
+    - 0
+    - 1
+    - 5
+    - 10
+  init_lr:
+    value: 1e-10
+  initial_downsample_convs:
+    distribution: categorical
+    values:
+    - 0
+    - 1
+  intermediate_downsample_convs:
+    value: 0
+  l2_coeff:
+    distribution: categorical
+    values:
+    - 1e-06
+    - 0
+  learning_rate:
+    value: 0.0001
+  linear_window:
+    value: 0
+  local_cross_attn:
+    value: performer
+  local_self_attn:
+    value: performer
+  loss:
+    value: mse
+  loss_w:
+    value: null
+  n_heads:
+    distribution: int_uniform
+    max: 16
+    min: 1
+  norm:
+    distribution: categorical
+    values:
+    - batch
+    - layer
+    - scale
+    - power
+    - none
+  performer_kernel:
+    distribution: categorical
+    values:
+    - relu
+    - softmax
+  performer_redraw_interval:
+    distribution: int_uniform
+    max: 250
+    min: 1
+  run_name:
+    value: stf_sweep
+  start_token_len:
+    distribution: int_uniform
+    max: 15
+    min: 1
+  target_points:
+    value: 15
+  time_emb_dim:
+    distribution: categorical
+    values:
+    - 0
+    - 4
+    - 8
+    - 12
+    - 16
+    - 20
+    - 24
+  time_mask_anneal_steps:
+    distribution: int_uniform
+    max: 1000
+    min: 1
+  time_mask_end:
+    value: 15
+  time_mask_start:
+    value: 1
+  time_resolution:
+    value: 24
+  trials:
+    value: 1
+  warmup_steps:
+    value: 0
+  workers:
+    value: 0
+program: custom_train
+project: test
