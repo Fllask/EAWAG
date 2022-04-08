@@ -56,13 +56,14 @@ def build_mosaic(img_list, max_size=1000):
     if np.max(mos) > 1:
         mos /= np.max(mos)
     return mos
-def build_mosaic_from_folder(source,dest, max_size = 1000):
+def build_mosaic_from_folder(source,dest, max_size = 1000,show=False):
     name_list = find_img(source)
     img_list = [plt.imread(name) for name in name_list]
     mos = build_mosaic(img_list,max_size = max_size)
     plt.imsave(os.path.join(dest,'mosaic.png'),mos)
-    plt.imshow(mos)
-    plt.show()
+    if show:
+        plt.imshow(mos)
+        plt.show()
 if __name__ == '__main__':
     max_size = 3000
     if len(sys.argv) <= 2:

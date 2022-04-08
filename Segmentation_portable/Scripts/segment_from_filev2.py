@@ -45,6 +45,9 @@ import sys
 import pickle
 import importlib
 
+#check if the script is running in a spyder environment.
+#comment this line if you want some plotting to be shown
+spyder =  any('SPYDER' in name for name in os.environ)
 
 
 
@@ -159,7 +162,7 @@ if __name__ == '__main__':
     mindiff = 10
     count = 0
     reset = False
-    print_mosaic = True
+    print_mosaic = False
     max_size=3000
     if len(sys.argv) <= 1:
         print ("Please input a dirtectory to scan and segment, aborting.")
@@ -209,7 +212,7 @@ if __name__ == '__main__':
                 if np.min(img_diff)>-mindiff:
                     continue
                 imgn = seg.normalize(img_diff)
-                if idx_img ==3:
+                if spyder and idx_img ==3:
                     show = True
                 else:
                     show = False
@@ -231,5 +234,7 @@ if __name__ == '__main__':
                 bundle_f = pd.DataFrame(bundle_l)
                 with open(os.path.join(path_obj, "bundle_frame_"+str(idx_folder)+"_"+str(idx_img)+".pickle"), 'wb') as f:
                     pickle.dump(bundle_f, f)
-            mos.build_mosaic_from_folder(path_ROI, path_flat,max_size = max_size)
+            if print_mosaic:
+                #build the mosaic and plot it if the script is running in spyder
+                mos.build_mosaic_from_folder(path_ROI, path_flat,max_size = max_size,show=spyder)
     print('done, '+str(count)+' png files were created')

@@ -77,8 +77,8 @@ def label_img_noBG(img, flat_img, threshold=0.35, shrink_factor=2, dil_size = 12
         t3 = time.perf_counter()
     
     #morphological dilation to connect the different parts
-    img_op = morphology.binary_erosion(img_bin,selem = morphology.disk(op_size))
-    img_dil = morphology.binary_dilation(img_op,selem = morphology.disk(dil_size))
+    img_op = morphology.binary_erosion(img_bin,footprint = morphology.disk(op_size))
+    img_dil = morphology.binary_dilation(img_op,footprint = morphology.disk(dil_size))
     
     if timed:
         t4 = time.perf_counter()
